@@ -5,7 +5,6 @@ import os
 
 def change_value(values):
   new_values = list()
-
   for value in values:
     if value == 'A':
       new_values.append(randint(81, 100))
@@ -26,10 +25,10 @@ def change_value(values):
   return new_values
 
 def find_candidate(lower, upper, values):
-  candidates = list()
-  for value in values:
-    if value > upper or value < lower:
-      candidates.append(value)
+  candidates = pd.DataFrame()
+  for idx, val in values.iterrows():
+    if val['Nilai'] > upper or val['Nilai'] < lower:
+      candidates = candidates.append(val)
   return candidates
 
 def fence(lower, upper, values, diff):
@@ -53,8 +52,12 @@ def calculate_outlier(dataset_path):
     median_value = np.median(transformed_data)
     lower_quantile = np.quantile(transformed_data, .25)
     upper_quantile = np.quantile(transformed_data, .75)
-    minor_outlier = inner_fences(lower_quantile, upper_quantile, transformed_data)
-    major_outlier = outer_fences(lower_quantile, upper_quantile, transformed_data)
+    df_dataset = pd.DataFrame({
+      'Nama': dataset['NAMA'],
+      'Nilai': transformed_data
+    })
+    minor_outlier = inner_fences(lower_quantile, upper_quantile, df_dataset)
+    major_outlier = outer_fences(lower_quantile, upper_quantile, df_dataset)
     i += 1
     if len(major_outlier) > 0:
       break
@@ -62,8 +65,8 @@ def calculate_outlier(dataset_path):
   print("\nAll dataset : {}".format(sorted(transformed_data)))
   print("Q1 data: {}".format(lower_quantile))
   print("Q3 data: {}".format(upper_quantile))
-  print("Minor Outlier : {}".format(minor_outlier))
-  print("Major Outlier : {}".format(major_outlier))
+  print("Minor Outlier : \n{}".format(minor_outlier))
+  print("Major Outlier : \n{}".format(major_outlier))
   print("Stop at {}".format(i))
 
 print("Loading ....")

@@ -56,7 +56,7 @@ def calculate_outlier(dataset_path):
     minor_outlier = inner_fences(lower_quantile, upper_quantile, transformed_data)
     major_outlier = outer_fences(lower_quantile, upper_quantile, transformed_data)
     i += 1
-    if len(minor_outlier) > 0:
+    if len(major_outlier) > 0:
       break
 
   print("\nAll dataset : {}".format(sorted(transformed_data)))
@@ -67,5 +67,5 @@ def calculate_outlier(dataset_path):
   print("Stop at {}".format(i))
 
 print("Loading ....")
-calculate_outlier('dataset/MesinLearning.csv')
+calculate_outlier('dataset/DataWarehouse.csv')
 calculate_outlier('dataset/GrafikaKomputer.csv')
